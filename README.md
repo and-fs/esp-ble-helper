@@ -249,4 +249,22 @@ The only thing to do is sending the notification now. Don't mind about the ``ind
 Now its time to test by simply compiling everything and flashing your ESP32.
 As soon as the ESP is up, you can use any BLE software (like *BLE Scanner* or *nRF Connect*) to test the BLE server.
 
-[TBC]
+I used the app *BLE Scanner* and immediately *"MyDevice"* appeared.
+After clicking connect the both services ``0xffe0`` and ``0xffe5`` are visible.
+
+![BLE device list](./docs/IMG_2055_small.png) ![Services](./docs/IMG_2056_small.png)
+
+For testing the notification, first push the ``0xffe0`` service, choose *"Notify Updating?*" and enable the *"Notify"* switch.
+
+![Services](./docs/IMG_2059_small.png) ![Enable notifications](./docs/IMG_2058_small.png)
+
+Then go back and change into the ``0xffe5`` service. There press *"Write Value"* and enter *"AA0155"* (0xAA = header, 0x01 = command, 0x55 = footer).
+
+![Write value](./docs/IMG_2060_small.png) 
+
+After clicking *"write"* the value has been sent to the ESP32, will be handled in our ``OnChannelWrite`` and in case command 0x01 the notification *"Hello"* should have been sent.
+This can be checked by going back to the ``0xffe4`` characteristic:
+
+![Check notifications](./docs/IMG_2061_small.png)
+
+Try any another command value and change the code for seeing the effects. Have fun with it!

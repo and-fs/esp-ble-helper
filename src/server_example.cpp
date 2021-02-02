@@ -55,11 +55,6 @@ static void OnGAPEvent(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *par
 
 void OnChannelWrite(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
 {
-    // only if the client has registered itself for receiving notifications
-    // the first byte of v_rx_config is not 0
-    if (0 != v_rx_config[0])
-        return;
-
     // the characteristic to which this handler belongs to is write only.
     // so the only event we receive here is ESP_GATTS_WRITE_EVT
     assert(event == ESP_GATTS_WRITE_EVT);
@@ -99,8 +94,6 @@ void OnChannelWrite(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_
     esp_ble_gatts_send_indicate(gatts_if, data.conn_id, hdl, response_length, v_tx, false);
 }
 
-// -------------------------------------------------------------------------------------------------------------------
-
 static void AddAttributes(BLEServer *pServ)
 {
     pServ->AddService(0xffe5);
@@ -122,8 +115,7 @@ static void AddAttributes(BLEServer *pServ)
         &uuid_0xffe4,
         &char_prop_notify,
         ESP_GATT_PERM_READ,
-        //20, 0, v_rx,
-        0, 0, nullptr,
+        20, 0, v_rx,
         "RX-Channel",
         nullptr,
         v_rx_config
